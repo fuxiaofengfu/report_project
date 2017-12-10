@@ -1,0 +1,1 @@
+struct<remote_addr:string,remote_user:string,time_local:string,request:string,status:string,body_bytes_sent:string,http_referer:string,http_user_agent:string,http_x_forwarded_for:string>

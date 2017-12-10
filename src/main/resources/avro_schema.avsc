@@ -1,0 +1,52 @@
+{
+    "type": "record",
+    "name": "runRecord",
+    "namespace": "com.fuxiaofeng",
+    "fields": [
+        {
+            "name": "remote_addr",
+            "type": "string",
+            "comment": "远程ip地址"
+        },
+        {
+            "name": "remote_user",
+            "type": "string",
+            "comment": "远程用户名"
+        },
+        {
+            "name": "time_local",
+            "type":"string",
+            "comment": "本地时间"
+        },
+        {
+            "name": "request",
+            "type":"string",
+            "comment": "请求"
+        },
+        {
+            "name": "status",
+            "type":"string",
+            "comment": "请求状态"
+        },
+        {
+            "name": "body_bytes_sent",
+            "type":"string",
+            "comment": "请求体字节长度"
+        },
+        {
+            "name": "http_referer",
+            "type":"string",
+            "comment": "来源地址"
+        },
+        {
+            "name": "http_user_agent",
+            "type":"string",
+            "comment": "用户代理"
+        },
+        {
+            "name": "http_x_forwarded_for",
+            "type":"string",
+            "comment": "代理服务器原始ip地址"
+        }
+    ]
+}

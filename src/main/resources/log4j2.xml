@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 这儿的日志级别是指log4j2内部的输出级别 -->
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%m%n" />
+        </Console>
+    </Appenders>
+    <Loggers>
+        <!-- 这儿是定义的appender的输出级别 -->
+        <Root level="WARN">
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers>
+</Configuration>

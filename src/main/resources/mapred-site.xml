@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>local</value>
+    </property>
+
+    <property>
+        <name>io.native.lib.available</name>
+        <value>true</value>
+        <description>开启本地库支持</description>
+    </property>
+
+    <property>
+        <name>mapreduce.job.reduces</name>
+        <value>1</value>
+        <description>reduce数量设置</description>
+    </property>
+
+    <property>
+        <name>dfs.blocksize</name>
+        <value>1024</value>
+        <description>文件块大小(byte)</description>
+    </property>
+
+    <property>
+        <name>fs.local.block.size</name>
+        <value>10485760</value>
+        <description>文件块大小(byte)1024*1024</description>
+    </property>
+
+    <property>
+        <name>mapreduce.input.fileinputformat.split.maxsize</name>
+        <value>10485760</value>
+    </property>
+
+    <property>
+        <name>mapreduce.input.fileinputformat.split.minsize</name>
+        <value>10485760</value>
+    </property>
+
+    <!--<property>-->
+        <!--<name>fs.defaultFS</name>-->
+        <!--<value>hdfs://fxfnameservices</value>-->
+        <!--<description>默认文件服务的协议和NS逻辑名称，和hdfs-site.xml里的对应此配置替代了1.0里的fs.default.name</description>-->
+    <!--</property>-->
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>tmp</value>
+    </property>
+    <property>
+        <name>io.compression.codecs</name>
+        <value>org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.BZip2Codec,org.apache.hadoop.io.compress.SnappyCodec</value>
+        <description>相应编码的操作类</description>
+    </property>
+
+    <!--<property>-->
+        <!--<name>io.file.buffer.size</name>-->
+        <!--<value>131072</value>-->
+        <!--<description>SequenceFiles在读写中可以使用的缓存大小</description>-->
+    <!--</property>-->
+    <!--<property>-->
+        <!--<name>ha.zookeeper.quorum</name>-->
+        <!--<value>10.211.55.8:2181,10.211.55.9:2181,10.211.55.10:2181</value>-->
+        <!--<description>HA使用的zookeeper地址</description>-->
+    <!--</property>-->
+    <!--<property>-->
+        <!--<name>ipc.client.connection.maxidletime</name>-->
+        <!--<value>60000</value>-->
+    <!--</property>-->
+    <!--<property>-->
+        <!--<name>mapreduce.output.fileoutputformat.compress.type</name>-->
+        <!--<value>BLOCK</value>-->
+    <!--</property>-->
+    <!--<property>-->
+        <!--<name>io.seqfile.compressioin.type</name>-->
+        <!--<value>BLOCK</value>-->
+    <!--</property>-->
+    <!--<property>-->
+        <!--<name>hadoop.proxyuser.root.groups</name>-->
+        <!--<value>hadoop</value>-->
+        <!--<description>hdfs dfsadmin –refreshSuperUserGroupsConfiguration,yarn rmadmin –refreshSuperUserGroupsConfiguration使用这两个命令不用重启就能刷新</description>-->
+    <!--</property>-->
+    <!--<property>-->
+        <!--<name>hadoop.proxyuser.root.hosts</name>-->
+        <!--<value>localhost</value>-->
+    <!--</property>-->
+</configuration>
