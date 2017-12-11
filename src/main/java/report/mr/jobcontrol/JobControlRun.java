@@ -20,6 +20,7 @@ public class JobControlRun {
 	 * -Davro.file.input.path -Davro.file.output.path
 	 * -Dorc.file.output.path
 	 * 即第一个任务的输入输出路径和最后一个任务的输出路径
+	 * ex.:-Davro.file.input.path=input -Davro.file.output.path=avro_output -Dorc.file.output.path=orc_output
 	 * @param args
 	 * @throws Exception
 	 */
