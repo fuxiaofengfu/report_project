@@ -5,7 +5,6 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapreduce.AvroJob;
 import org.apache.avro.mapreduce.AvroKeyOutputFormat;
-import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
@@ -66,9 +65,9 @@ public class ConvertToAvroJob extends AbstractMR{
 			for(int i=0;i<fields.size();i++){
 				Schema.Field field = fields.get(i);
 				String avroValue = valueArr[i];
-				if(StringUtils.isNotEmpty(avroValue) && "-".equals(avroValue)){
+				/*if(StringUtils.isNotEmpty(avroValue) && "-".equals(avroValue)){
 					avroValue = "";
-				}
+				}*/
 				data.put(field.name(),avroValue);
 			}
 			objectAvroKey.datum(data);
