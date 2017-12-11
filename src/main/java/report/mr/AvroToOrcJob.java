@@ -5,11 +5,11 @@ import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapreduce.AvroJob;
 import org.apache.avro.mapreduce.AvroKeyInputFormat;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.util.GenericOptionsParser;
 import org.apache.orc.OrcConf;
 import org.apache.orc.TypeDescription;
 import org.apache.orc.mapred.OrcStruct;
@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.util.List;
 
 public class AvroToOrcJob extends AbstractMR {
+
+	public final static String FILE_INPUT_PATH_PREFIX="orc";
+	public final static String FILE_OUTPUT_PATH_PREFIX="orc";
 
 	@Override
 	public String getJobName() {
@@ -31,12 +34,15 @@ public class AvroToOrcJob extends AbstractMR {
 	 * @return
 	 */
 	@Override
-	public Job getJob() throws IOException {
+	public Job getJob(String[] args) throws IOException {
 
 		Configuration conf = super.getConf();
 		if(null == conf){
 			conf = new Configuration();
 		}
+		//解析-D参数
+		GenericOptionsParser parser = new GenericOptionsParser(conf, args);
+		args = parser.getRemainingArgs();
 		OrcConf.MAPRED_OUTPUT_SCHEMA.setString(conf,OrcSchemaUtil.getOrcSchema(false));
 		Job job = Job.getInstance(conf,this.getJobName());
 		job.setJarByClass(AvroToOrcJob.class);
@@ -48,9 +54,18 @@ public class AvroToOrcJob extends AbstractMR {
 		AvroJob.setInputKeySchema(job,AvroSchemaUtil.getAvroSchema(false));
 
 		job.setOutputFormatClass(OrcOutputFormat.class);
-		AvroKeyInputFormat.addInputPaths(job,"avro_input");
-		OrcOutputFormat.setOutputPath(job,new Path("orc_output"));
+		handleInOutputPath(job);
 		return job;
+	}
+
+	@Override
+	public String getFileInputPathPrefix() {
+		return FILE_INPUT_PATH_PREFIX;
+	}
+
+	@Override
+	public String getFileOutPathPrefix() {
+		return FILE_OUTPUT_PATH_PREFIX;
 	}
 
 	private static class AvroMapper extends Mapper<AvroKey<GenericData.Record>,NullWritable,NullWritable,OrcStruct>{

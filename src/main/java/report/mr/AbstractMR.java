@@ -6,6 +6,7 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.slf4j.Logger;
@@ -15,6 +16,9 @@ import java.io.IOException;
 
 public abstract class AbstractMR extends Configured implements Tool{
 
+	public final static String FILE_INPUT_PATH= ".file.input.path";
+	public final static String FILE_OUT_PATH=".file.output.path";
+
 	protected Logger logger = LoggerFactory.getLogger(AbstractMR.class);
 
 	//0个reduce
@@ -23,8 +27,7 @@ public abstract class AbstractMR extends Configured implements Tool{
 	public int run(String[] args) throws Exception {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		Job runjob = getJob();
-		handleOutputPath(runjob);
+		Job runjob = getJob(args);
 		boolean b = runjob.waitForCompletion(true);
 		long time = stopWatch.getTime();
 		stopWatch.stop();
@@ -32,12 +35,21 @@ public abstract class AbstractMR extends Configured implements Tool{
 		return b ? 0 : 1;
 	}
 
-	public static void handleOutputPath(Job runjob) throws IOException {
-		Configuration configuration = runjob.getConfiguration();
-		String outPutPath = configuration.get(FileOutputFormat.OUTDIR);
+	public void handleInOutputPath(Job job) throws IOException {
+
+		//处理输入路径
+		Configuration configuration = job.getConfiguration();
+		String inputPath = getFileInputPathPrefix() + AbstractMR.FILE_INPUT_PATH;
+		inputPath=configuration.get(inputPath,"inputpath");
+		FileInputFormat.setInputPaths(job,inputPath);
+		FileInputFormat.setInputDirRecursive(job,true);
+		//处理输出路径
+		String outputPath = getFileOutPathPrefix() + AbstractMR.FILE_OUT_PATH;
+		outputPath = configuration.get(outputPath,"outputpath");
+		FileOutputFormat.setOutputPath(job,new Path(outputPath));
 		FileSystem fileSystem = FileSystem.get(configuration);
-		if(fileSystem.exists(new Path(outPutPath))){
-			fileSystem.delete(new Path(outPutPath),true);
+		if(fileSystem.exists(new Path(outputPath))){
+			fileSystem.delete(new Path(outputPath),true);
 		}
 	}
 
@@ -58,5 +70,8 @@ public abstract class AbstractMR extends Configured implements Tool{
 	 * 获取job
 	 * @return
 	 */
-	public abstract Job getJob() throws IOException;
+	public abstract Job getJob(String[] args) throws IOException;
+
+	public abstract String getFileInputPathPrefix();
+	public abstract String getFileOutPathPrefix();
 }
