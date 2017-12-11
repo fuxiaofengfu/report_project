@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * 需要注意这里是单一链接，关闭时务必保证没有connection正在使用
+ */
 public class MyConnection {
 
 	private static Connection connection;
