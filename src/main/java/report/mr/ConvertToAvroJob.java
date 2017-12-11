@@ -5,6 +5,7 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapreduce.AvroJob;
 import org.apache.avro.mapreduce.AvroKeyOutputFormat;
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
@@ -76,12 +77,15 @@ public class ConvertToAvroJob extends AbstractMR{
 			GenericData.Record data = (GenericData.Record)genericData.newRecord(null, schema);
 			AvroKey<GenericData.Record> objectAvroKey = new AvroKey<GenericData.Record>();
 			List<Schema.Field> fields = schema.getFields();
+			//统计总的访问记录数
+			context.getCounter(AbstractMR.FXF_COUNTER,"total").increment(1);
 			for(int i=0;i<fields.size();i++){
 				Schema.Field field = fields.get(i);
 				String avroValue = valueArr[i];
-				/*if(StringUtils.isNotEmpty(avroValue) && "-".equals(avroValue)){
-					avroValue = "";
-				}*/
+				if(StringUtils.isNotEmpty(avroValue) && !"-".equals(avroValue) && !"\"-\"".equals(avroValue)){
+					//统计字段合法数
+					context.getCounter(AbstractMR.FXF_COUNTER,field.name()).increment(1);
+				}
 				data.put(field.name(),avroValue);
 			}
 			objectAvroKey.datum(data);

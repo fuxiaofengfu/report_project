@@ -9,13 +9,12 @@ import org.apache.hadoop.mapreduce.lib.jobcontrol.ControlledJob;
 import org.apache.hadoop.mapreduce.lib.jobcontrol.JobControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import report.jdbc.MyTransactionalDML;
 import report.mr.AbstractMR;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
@@ -97,7 +96,12 @@ public class JobControlMonitor {
 		Iterator<CounterGroup> iterator = counters.iterator();
 		while(iterator.hasNext()){
 			CounterGroup next = iterator.next();
-			builder.append("\ngroupName=").append(next.getDisplayName());
+			String groupName = next.getDisplayName();
+			//保存统计字段信息
+			if(AbstractMR.FXF_COUNTER.equals(groupName)){
+				saveMysql(next);
+			}
+			builder.append("\ngroupName=").append(groupName);
 			Iterator<Counter> iterator1 = next.iterator();
 			while(iterator1.hasNext()) {
 				Counter next1 = iterator1.next();
@@ -108,5 +112,36 @@ public class JobControlMonitor {
 		}
 		builder.append("\njob").append(job.getJobName()).append("所花时间:").append(timeStr);
 		return builder.toString();
+	}
+
+	private static void saveMysql(CounterGroup counterGroup){
+		new Thread(){
+			@Override
+			public void run() {
+				List<Object> params = new ArrayList<>();
+				String columnStr="total,remote_addr,remote_user,time_local,request,status,body_bytes_sent,http_referer,http_user_agent,http_x_forwarded_for";
+				String[] arr = columnStr.split(",");
+				for(String str : arr){
+					Counter counter = counterGroup.findCounter(str, false);
+					if(null == counter){
+						params.add(0);
+					}else{
+						params.add(counter.getValue());
+					}
+				}
+				params.add(1,new Date());
+				try {
+					saveCounterIntoMysql(params);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
+	}
+
+	private static void saveCounterIntoMysql(List<Object> params) throws SQLException {
+		String sql = "insert into column_count_report (`total`,`count_time`,`remote_addr`,`remote_user`,`time_local`,`request`,`status`,`body_bytes_sent`,`http_referer`,`http_user_agent`,`http_x_forwarded_for`)";
+		sql += " values(?,?,?,?,?,?,?,?,?,?,?)";
+		MyTransactionalDML.executeDML(sql,params);
 	}
 }

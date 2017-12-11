@@ -16,6 +16,7 @@ import java.io.IOException;
 
 public abstract class AbstractMR extends Configured implements Tool{
 
+	public final static String FXF_COUNTER = "fuxiaofengCount";
 	public final static String FILE_INPUT_PATH= ".file.input.path";
 	public final static String FILE_OUT_PATH=".file.output.path";
 
