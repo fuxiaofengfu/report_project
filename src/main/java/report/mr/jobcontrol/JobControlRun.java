@@ -1,21 +1,20 @@
 package report.mr.jobcontrol;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.jobcontrol.ControlledJob;
 import org.apache.hadoop.mapreduce.lib.jobcontrol.JobControl;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import report.mr.AbstractMR;
 import report.mr.AvroToOrcJob;
 import report.mr.ConvertToAvroJob;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-
 public class JobControlRun {
+
+	private static Logger logger = LoggerFactory.getLogger(JobControlRun.class);
 
 	public static void main(String[] args) throws Exception {
 
@@ -44,7 +43,7 @@ public class JobControlRun {
 		jobControl.addJob(controlledJob);
 		//执行结果
 		JobControlResult result = JobControlMonitor.monitor(jobControl);
-		System.out.println(result.toString());
+		logger.info("\n任务链执行结果>>>>>>>>>>\n",result);
 	}
 
 

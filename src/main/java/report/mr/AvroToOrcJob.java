@@ -39,6 +39,7 @@ public class AvroToOrcJob extends AbstractMR {
 		}
 		OrcConf.MAPRED_OUTPUT_SCHEMA.setString(conf,OrcSchemaUtil.getOrcSchema(false));
 		Job job = Job.getInstance(conf,this.getJobName());
+		job.setJarByClass(AvroToOrcJob.class);
 		job.setNumReduceTasks(ZERO_REDUCE);
 		job.setMapperClass(AvroMapper.class);
 		job.setMapOutputKeyClass(NullWritable.class);

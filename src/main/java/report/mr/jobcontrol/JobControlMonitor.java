@@ -75,10 +75,14 @@ public class JobControlMonitor {
 			}
 		};
 		FutureTask<JobControlResult> future = new FutureTask<>(callable);
-		MyThreadPool.run(future);
-		JobControlResult jobControlResult = future.get();
-		//线程池关掉
-		MyThreadPool.stop();
+		JobControlResult jobControlResult;
+		try{
+			MyThreadPool.run(future);
+			jobControlResult = future.get();
+		}finally {
+			//线程池关掉
+			MyThreadPool.stop();
+		}
 		return  jobControlResult;
 	}
 
