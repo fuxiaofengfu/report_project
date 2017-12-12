@@ -69,6 +69,13 @@
                            <mainClass>report.mr.JobDriverManager</mainClass>
                         </manifest>
                     </archive>
+                    <excludes>
+                        <exclude>*.xml</exclude>
+                        <exclude>log4j2.properties</exclude>
+                        <exclude>hive-log4j2.properties</exclude>
+                        <exclude>hive-exec-log4j2.properties</exclude>
+                        <exclude>log4j.properties</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
