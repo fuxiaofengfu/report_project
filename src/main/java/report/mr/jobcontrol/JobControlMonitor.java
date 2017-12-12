@@ -25,9 +25,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class JobControlMonitor {
 
-	private Logger logger = LoggerFactory.getLogger(JobControlMonitor.class);
-
-	private static JobControl mjobControl;
+	private static Logger logger = LoggerFactory.getLogger(JobControlMonitor.class);
 
 	public static JobControlResult monitor(JobControl jobControl) throws Exception {
 
@@ -35,20 +33,19 @@ public class JobControlMonitor {
 		if(!JobControl.ThreadState.READY.equals(threadState)){
 			throw new RuntimeException("当前jobControl状态不对,请检查健康状态");
 		}
-		mjobControl = jobControl;
 		//获取任务结果
 		Callable<JobControlResult> callable = new Callable<JobControlResult>(){
 			JobControlResult jobControlResult = new JobControlResult();
 			@Override
 			public JobControlResult call() throws Exception {
 				long beginTime = System.currentTimeMillis();
-				MyThreadPool.run(mjobControl);
-				while(!mjobControl.allFinished()){
+				MyThreadPool.run(jobControl);
+				while(!jobControl.allFinished()){
 					TimeUnit.SECONDS.sleep(3);
 				}
 				long endTime = System.currentTimeMillis();
-				List<ControlledJob> failedJobList = mjobControl.getFailedJobList();
-				List<ControlledJob> successfulJobList = mjobControl.getSuccessfulJobList();
+				List<ControlledJob> failedJobList = jobControl.getFailedJobList();
+				List<ControlledJob> successfulJobList = jobControl.getSuccessfulJobList();
 				Map<String,String> fail = new HashMap<>();
 				if(CollectionUtils.isNotEmpty(failedJobList)){
 					jobControlResult.setStatus(JobControlResult.FAIL);
@@ -69,7 +66,7 @@ public class JobControlMonitor {
 				jobControlResult.setFailMap(fail);
 				jobControlResult.setSuccessMap(success);
 				jobControlResult.setTotalTime(AbstractMR.timeFormat(endTime-beginTime));
-				mjobControl.stop();
+				jobControl.stop();
 				return jobControlResult;
 			}
 		};
@@ -90,6 +87,7 @@ public class JobControlMonitor {
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
+		logger.info("**********job info>>{}",job);
 		long time = job.getFinishTime() - job.getStartTime();
 		String timeStr = AbstractMR.timeFormat(time);
 		Counters counters = job.getCounters();
