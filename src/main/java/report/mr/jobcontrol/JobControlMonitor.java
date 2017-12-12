@@ -90,8 +90,8 @@ public class JobControlMonitor {
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
-		long time = job.getFinishTime() - job.getStartTime();
-		String timeStr = AbstractMR.timeFormat(time);
+		//long time = job.getFinishTime() - job.getStartTime();
+		//String timeStr = AbstractMR.timeFormat(time);
 		Counters counters = job.getCounters();
 		Iterator<CounterGroup> iterator = counters.iterator();
 		while(iterator.hasNext()){
@@ -110,7 +110,7 @@ public class JobControlMonitor {
 						.append(",counerValue=").append(next1.getValue());
 			}
 		}
-		builder.append("\njob").append(job.getJobName()).append("所花时间:").append(timeStr);
+		builder.append("\njob").append(job.getJobName()).append("所花时间:").append("暂时不计算");
 		return builder.toString();
 	}
 
