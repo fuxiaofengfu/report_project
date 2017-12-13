@@ -91,6 +91,9 @@ public class JobControlMonitor {
 		long time = job.getFinishTime() - job.getStartTime();
 		String timeStr = AbstractMR.timeFormat(time);
 		Counters counters = job.getCounters();
+		if(null == counters){
+			return null;
+		}
 		Iterator<CounterGroup> iterator = counters.iterator();
 		while(iterator.hasNext()){
 			CounterGroup next = iterator.next();
