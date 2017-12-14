@@ -19,10 +19,10 @@ create table nginx_log_report(
   id bigint not null AUTO_INCREMENT comment '主键',
   statistics bigint default 0 comment '总记录数',
   count_time DATETIME DEFAULT now() COMMENT '统计时间',
-  `remote_addr` VARCHAR(200) comment '远程ip地址',
-  `remote_user` VARCHAR(200) comment '用户',
-  `status` VARCHAR(50) comment '状态',
-  `http_user_agent` VARCHAR(500) comment '用户请求代理',
+  `remote_addr` VARCHAR(200) DEFAULT NULL comment '远程ip地址',
+  `remote_user` VARCHAR(200) DEFAULT NULL comment '用户',
+  `status` VARCHAR(50) DEFAULT NULL comment '状态',
+  `http_user_agent` VARCHAR(500) DEFAULT NULL comment '用户请求代理',
   primary key(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
