@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class HiveToMysql {
 
-	private final static String HIVE_TABLE_DATESTR="-Ddate_year_month_day";
+	private final static String HIVE_TABLE_DATESTR="-Ddate_str";
 
 	public static void main(String[] args) throws SQLException {
 		insertToMysql(args);
@@ -42,7 +42,7 @@ public class HiveToMysql {
 	}
 
 	/**
-	 * 需要参数-Ddate_year_month_day=2017-12-12
+	 * 需要参数-Ddate_str=2017-12-12 12:21:43
 	 * @param args
 	 * @throws SQLException
 	 */
@@ -57,13 +57,13 @@ public class HiveToMysql {
 		}
 		//这里必须执行分区表,如果没传递分区表分区,则啥都不做
 		if(StringUtils.isEmpty(dateStr)){
-			return;
+			throw new RuntimeException("参数-Ddate_str未设置");
 		}
 		List<Map<String, Object>> hql = getHql(dateStr);
-		saveToMysql(hql);
+		saveToMysql(hql,dateStr);
 	}
 
-	private static int saveToMysql(List<Map<String, Object>> hiveResult) throws SQLException {
+	private static int saveToMysql(List<Map<String, Object>> hiveResult,String dateStr) throws SQLException {
 
 		if(CollectionUtils.isEmpty(hiveResult)){
 			return 0;
