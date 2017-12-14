@@ -2,7 +2,6 @@ package report.mr;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
@@ -16,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -53,14 +53,17 @@ public abstract class AbstractMR extends Configured implements Tool{
 		}
 		Date date = null;
 		try {
-			date = DateUtils.parseDate(dateStr, "yyyy-MM-dd HH:mm:ss");
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			date = simpleDateFormat.parse(dateStr);
 		} catch (ParseException e) {
 			e.printStackTrace();
 			return;
 		}
 		Calendar instance = Calendar.getInstance();
 		instance.setTime(date);
-		int year= instance.get(Calendar.YEAR),month = instance.get(Calendar.MONTH);
+		int year= instance.get(Calendar.YEAR);
+
+		int month = instance.get(Calendar.MONTH)+1;
 		int day = instance.get(Calendar.DAY_OF_MONTH);
 		String appendDateStr = "/"+year+month+"/"+day;
 
