@@ -83,24 +83,29 @@ public class HiveToMysql {
 		builder.append(") values");
 
 		Date date = new Date();
+		//String format = DateFormatUtils.format(date, "yyyy-MM-dd HH:mm:ss");
+		int initCapacity= (int)Math.round(hiveResult.size() * columnMap.size() / 0.8);
+		List<Object> params = new ArrayList<>(initCapacity);
 		for (int i = 0,j=hiveResult.size(); i < j; i++) {//条数
 			builder.append("(");
 			Map<String,Object> valueMap = hiveResult.get(i);
 			columnIndex=0;
 			for(Object object : valueMap.values()){
-				builder.append(object);
+				builder.append("?");
+				params.add(object);
 				if(columnIndex<=valueMap.values().size() -2 ){
 					builder.append(",");
 				}
 				columnIndex++;
 			}
-			builder.append(",").append(date);
+			builder.append(",").append("?");
+			params.add(date);
 			builder.append(")");
 			if(i<=j-2){
 				builder.append(",");
 			}
 		}
 		System.out.println("执行mysql-->>>>>>"+builder.toString());
-		return  MyTransactionalDML.executeDML(builder.toString(), null);
+		return  MyTransactionalDML.executeDML(builder.toString(), params);
 	}
 }
