@@ -20,7 +20,7 @@ public class HiveToMysql {
 
 	private static List<Map<String, Object>> getHql(String partitionStr) throws SQLException {
 		StringBuilder sql = new StringBuilder();
-		sql.append("select count(1),remote_user,remote_addr,http_referer ");
+		sql.append("select count(1) statistics,remote_user,remote_addr,http_referer ");
 		sql.append("from nginx_log ");
 		if(StringUtils.isNotEmpty(partitionStr)){
 			sql.append("where yearmonth_dir=? and day_dir=? ");
