@@ -7,7 +7,6 @@ import report.jdbc.MyTransactionalDML;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +53,10 @@ public class HiveToMysql {
 				dateStr = args[i].split("=")[1];
 			}
 		}
+		//这里必须执行分区表,如果没传递分区表分区,则啥都不做
+		if(StringUtils.isEmpty(dateStr)){
+			return;
+		}
 		List<Map<String, Object>> hql = getHql(dateStr);
 		saveToMysql(hql);
 	}
@@ -76,10 +79,10 @@ public class HiveToMysql {
 		}
 		builder.append(") values");
 
-		columnIndex = 0;
 		for (int i = 0,j=hiveResult.size(); i < j; i++) {
 			builder.append("(");
 			Map<String,Object> valueMap = hiveResult.get(i);
+			columnIndex=0;
 			for(Object object : valueMap.values()){
 				builder.append(object);
 				if(columnIndex<=valueMap.values().size() -2 ){
