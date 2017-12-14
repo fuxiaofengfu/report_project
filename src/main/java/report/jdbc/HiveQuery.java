@@ -30,7 +30,7 @@ public class HiveQuery {
 			data = new ArrayList<Map<String,Object>>(100);
 			while (resultSet.next()){
 				HashMap<String, Object> hashMap = new HashMap<>();
-				for (int i = 1; i < columnCount; i++) {
+				for (int i = 1; i <= columnCount; i++) {
 					hashMap.put(metaData.getColumnName(i),resultSet.getObject(i));
 				}
 				data.add(hashMap);
