@@ -7,6 +7,7 @@ import report.jdbc.MyTransactionalDML;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -20,12 +21,12 @@ public class HiveToMysql {
 
 	private static List<Map<String, Object>> getHql(String partitionStr) throws SQLException {
 		StringBuilder sql = new StringBuilder();
-		sql.append("select count(1) statistics,remote_user,remote_addr,http_referer ");
+		sql.append("select count(1) statistics,remote_user,remote_addr,status,http_user_agent ");
 		sql.append("from nginx_log ");
 		if(StringUtils.isNotEmpty(partitionStr)){
 			sql.append("where yearmonth_dir=? and day_dir=? ");
 		}
-		sql.append("group by remote_user,remote_addr,http_referer with cube");
+		sql.append("group by remote_user,remote_addr,status,http_user_agent with cube");
 
 		List<Object> params = null;
 		if(StringUtils.isNotEmpty(partitionStr)){
@@ -77,9 +78,11 @@ public class HiveToMysql {
 				builder.append(",");
 			}
 		}
+		builder.append(",count_time");
 		builder.append(") values");
 
-		for (int i = 0,j=hiveResult.size(); i < j; i++) {
+		Date date = new Date();
+		for (int i = 0,j=hiveResult.size(); i < j; i++) {//条数
 			builder.append("(");
 			Map<String,Object> valueMap = hiveResult.get(i);
 			columnIndex=0;
@@ -90,6 +93,7 @@ public class HiveToMysql {
 				}
 				columnIndex++;
 			}
+			builder.append(",").append(date);
 			builder.append(")");
 			if(i<=j-2){
 				builder.append(",");

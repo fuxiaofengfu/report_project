@@ -1,8 +1,6 @@
 package report.jdbc;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.hive.jdbc.HivePreparedStatement;
-import org.apache.hive.jdbc.HiveQueryResultSet;
 import report.jdbc.hive.HiveConnection;
 
 import java.sql.*;
