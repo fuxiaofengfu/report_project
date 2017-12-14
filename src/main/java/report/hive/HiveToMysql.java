@@ -35,7 +35,7 @@ public class HiveToMysql {
 			String[] split = partitionStr.split("-");
 			params.add(""+split[0]+split[1]);
 			String day = split[2].split(" ")[0];
-			params.add(String.valueOf(day));
+			params.add(day);
 		}
 		System.out.println("执行hql-->>>>>"+sql.toString());
 		List<Map<String, Object>> query = HiveQuery.query(sql.toString(), params);
