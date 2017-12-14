@@ -1,6 +1,5 @@
 package report.mr;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -14,17 +13,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 public abstract class AbstractMR extends Configured implements Tool{
 
 	public final static String FXF_COUNTER = "fuxiaofengCount";
 	public final static String FILE_INPUT_PATH= ".file.input.path";
 	public final static String FILE_OUT_PATH=".file.output.path";
-	public final static String DATE_STR="date_str";
+
 	protected Logger logger = LoggerFactory.getLogger(AbstractMR.class);
 
 	//0个reduce
@@ -47,32 +42,11 @@ public abstract class AbstractMR extends Configured implements Tool{
 		Configuration configuration = job.getConfiguration();
 		String inputPath = getFileInputPathPrefix() + AbstractMR.FILE_INPUT_PATH;
 		inputPath=configuration.get(inputPath,"inputpath");
-		String dateStr = configuration.get(DATE_STR);
-		if(StringUtils.isEmpty(dateStr)){
-			throw new RuntimeException("-Ddate_str参数未配置");
-		}
-		Date date = null;
-		try {
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			date = simpleDateFormat.parse(dateStr);
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return;
-		}
-		Calendar instance = Calendar.getInstance();
-		instance.setTime(date);
-		int year= instance.get(Calendar.YEAR);
-
-		int month = instance.get(Calendar.MONTH)+1;
-		int day = instance.get(Calendar.DAY_OF_MONTH);
-		String appendDateStr = "/"+year+month+"/"+day;
-
-		FileInputFormat.setInputPaths(job,inputPath+appendDateStr);
+		FileInputFormat.setInputPaths(job,inputPath);
 		FileInputFormat.setInputDirRecursive(job,true);
 		//处理输出路径
 		String outputPath = getFileOutPathPrefix() + AbstractMR.FILE_OUT_PATH;
 		outputPath = configuration.get(outputPath,"outputpath");
-		outputPath += appendDateStr;
 		FileOutputFormat.setOutputPath(job,new Path(outputPath));
 		FileSystem fileSystem = FileSystem.get(configuration);
 		if(fileSystem.exists(new Path(outputPath))){
