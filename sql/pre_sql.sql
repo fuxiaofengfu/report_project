@@ -15,6 +15,18 @@ create table column_count_report(
    primary key(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+create table nginx_log_report(
+  id bigint not null AUTO_INCREMENT comment '主键',
+  statistics bigint default 0 comment '总记录数',
+  count_time DATETIME DEFAULT now() COMMENT '统计时间',
+  `remote_addr` bigint default 0 comment '远程ip地址',
+  `remote_user` bigint default 0 comment '用户',
+  `status` bigint default 0 comment '状态',
+  `http_user_agent` bigint default 0 comment '用户请求代理'
+  primary key(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE external TABLE `nginx_log`(
   `remote_addr` string,
   `remote_user` string,
