@@ -25,6 +25,7 @@ CREATE external TABLE `nginx_log`(
   `http_referer` string,
   `http_user_agent` string,
   `http_x_forwarded_for` string)
+partitioned by (yearmonth_dir string,day_dir string)
 ROW FORMAT SERDE
   'org.apache.hadoop.hive.ql.io.orc.OrcSerde'
 STORED AS INPUTFORMAT
