@@ -1,10 +1,12 @@
 package report.hive;
 
+import eu.bitwalker.useragentutils.Browser;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import report.jdbc.HiveQuery;
 import report.jdbc.MyTransactionalDML;
 
+import java.security.KeyStore;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -84,21 +86,30 @@ public class HiveToMysql {
 		builder.append(") values");
 
 		Date date = new Date();
-		//String format = DateFormatUtils.format(date, "yyyy-MM-dd HH:mm:ss");
 		int initCapacity= (int)Math.round(hiveResult.size() * columnMap.size() / 0.8);
 		List<Object> params = new ArrayList<>(initCapacity);
 		for (int i = 0,j=hiveResult.size(); i < j; i++) {//条数
 			builder.append("(");
 			Map<String,Object> valueMap = hiveResult.get(i);
 			columnIndex=0;
-			for(Object object : valueMap.values()){
+
+			for (Map.Entry entry : valueMap.entrySet()){
 				builder.append("?");
-				params.add(object);
-				if(columnIndex<=valueMap.values().size() -2 ){
+				Object columnV = entry.getValue();
+				if("http_user_agent".equals(entry.getKey()) && null != columnV){
+					String value = (String)columnV;
+					Browser browser = Browser.parseUserAgentString(value);
+					columnV = browser.getName()+":"+
+							browser.getBrowserType().getName()+":"+
+							browser.getVersion(value);
+				}
+				params.add(columnV);
+				if(columnIndex<=valueMap.size() -2 ){
 					builder.append(",");
 				}
 				columnIndex++;
 			}
+
 			builder.append(",").append("?");
 			params.add(date);
 			builder.append(")");
